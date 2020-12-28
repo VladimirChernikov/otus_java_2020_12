@@ -1,0 +1,37 @@
+interface ProjectProperties {
+    static final BASE_NAME = "gradleHelloWorld"
+    static final VERSION     = "0.1"
+    static final CLASSIFIER  = "fat"
+    static final MAIN_CLASS  = "ru.otus.hw01.HelloOtus"
+}
+
+plugins {
+    // Apply the java plugin to add support for Java
+    id 'java'
+    id 'com.github.johnrengelman.shadow'
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+    // This dependency is used by the application.
+    implementation 'com.google.guava:guava' 
+}
+
+shadowJar {
+    archiveBaseName.set(ProjectProperties.BASE_NAME)
+    archiveVersion.set(ProjectProperties.VERSION)
+    archiveClassifier.set(ProjectProperties.CLASSIFIER)
+    manifest {
+        attributes('Main-Class': ProjectProperties.MAIN_CLASS)
+    }
+}
+
+tasks.build.dependsOn tasks.shadowJar
+
+task run(type: JavaExec) {
+    dependsOn tasks.build
+    classpath = files(shadowJar.archivePath)
+}
+
