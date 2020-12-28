@@ -28,13 +28,10 @@ shadowJar {
     }
 }
 
-tasks.build.dependsOn rootProject.tasks.hello
 tasks.build.dependsOn tasks.shadowJar
 
 task run(type: JavaExec) {
+    dependsOn tasks.build
     classpath = files(shadowJar.archivePath)
-    dependsOn {
-        tasks.build
-    }    
 }
 
