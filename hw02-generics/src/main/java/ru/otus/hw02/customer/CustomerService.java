@@ -4,6 +4,7 @@ package ru.otus.hw02.customer;
 import java.util.AbstractMap;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.TreeMap;
 
 public class CustomerService {
@@ -11,8 +12,7 @@ public class CustomerService {
     //todo: 3. надо реализовать методы этого класса
     //важно подобрать подходящую Map-у, посмотрите на редко используемые методы, они тут полезны
     
-    private Comparator<Customer> customerComparatorByScore = Comparator.comparing( Customer::getScores );
-    private TreeMap<Customer, String> customerMap = new TreeMap<>( customerComparatorByScore );
+    final private NavigableMap<Customer, String> customerMap = new TreeMap<>( Comparator.comparing( Customer::getScores ) );
 
     public Map.Entry<Customer, String> getSmallest() {
         //Возможно, чтобы реализовать этот метод, потребуется посмотреть как Map.Entry сделан в jdk

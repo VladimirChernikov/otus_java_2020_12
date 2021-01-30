@@ -1,19 +1,20 @@
 package ru.otus.hw02.customer;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class CustomerReverseOrder {
 
     //todo: 2. надо реализовать методы этого класса
     //надо подобрать подходящую структуру данных, тогда решение будет в "две строчки"
     
-    Stack<Customer> customerList = new Stack<>();
+    final private Deque<Customer> customerStack = new ArrayDeque<>();
 
     public void add(Customer customer) {
-        customerList.push(customer);
+        customerStack.push(customer);
     }
 
     public Customer take() {
-        return customerList.pop();
+        return customerStack.pop();
     }
 }
