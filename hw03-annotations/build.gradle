@@ -1,0 +1,50 @@
+interface ProjectProperties {
+    static final BASE_NAME = "DiyTester"
+    static final VERSION     = "0.1"
+    static final CLASSIFIER  = "fat"
+    static final MAIN_CLASS  = "ru.otus.hw03.Runner"
+}
+
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow'
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+}
+
+// test {
+//     useJUnitPlatform()
+//     testLogging {
+//         events "passed", "skipped", "failed"
+//     }
+// }
+
+tasks.withType(JavaCompile) {
+    options.with {
+        encoding = 'UTF-8'
+        warnings = false
+    }
+}
+
+
+shadowJar {
+    archiveBaseName.set(ProjectProperties.BASE_NAME)
+    archiveVersion.set(ProjectProperties.VERSION)
+    archiveClassifier.set(ProjectProperties.CLASSIFIER)
+    manifest {
+        attributes('Main-Class': ProjectProperties.MAIN_CLASS)
+    }
+}
+
+tasks.build.dependsOn tasks.shadowJar
+
+task run(type: JavaExec) {
+    dependsOn tasks.build
+    classpath = files(shadowJar.archivePath)
+    args 'ru.otus.hw03.tests.SomeTests'
+}
+
