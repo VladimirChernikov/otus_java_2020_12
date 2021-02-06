@@ -45,54 +45,6 @@ public class BatchItem
     }
 
     /**
-     * Checks that object is ready to use.
-     *
-     * @return false if it is not a valid batch item
-     */
-    public boolean isValid() {
-        return metadata == null || method.getParameterCount() > 0 ? false : true;
-    }
-
-    /**
-     * Finds @Batch annotation.
-     *
-     * @param annotations array of annotations
-     * @param searchDepth number of levels of annotation annotations to be checked.
-     * 0 - for direct annotations.
-     * @return first occured @Batch annotation reference
-     */
-    private Batch findBatchAnnotation( Annotation[] annotations, int searchDepth ) {
-        Batch result = null;
-        for (int i = 0; i < annotations.length && result == null; i++)  {
-            Annotation annotation = annotations[i];
-            if ( annotation.annotationType().equals( Batch.class ) )  {
-                result = (Batch) annotation;
-            }
-            else if ( searchDepth > 0 ) {
-                result = findBatchAnnotation( annotation.annotationType().getAnnotations(), searchDepth-1 );
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Finds @Title annotation.
-     *
-     * @param annotations array of annotations
-     * @return string value of annotation
-     */
-    private String findTitle( Annotation[] annotations ) {
-        String result = null;
-        for (int i = 0; i < annotations.length && result == null; i++)  {
-            Annotation annotation = annotations[i];
-            if ( annotation.annotationType().equals( Title.class ) )  {
-                result = ((Title)annotation).value();
-            }
-        }
-        return result;
-    }
-
-    /**
      * Execute batch item method on object.
      *
      * @param object an object to be examined
@@ -132,6 +84,16 @@ public class BatchItem
         return passed;
     }
 
+
+    /**
+     * Checks that object is ready to use.
+     *
+     * @return false if it is not a valid batch item
+     */
+    public boolean isValid() {
+        return metadata == null || method.getParameterCount() > 0 ? false : true;
+    }
+
     public boolean isItemPassed() {
         return itemPassed;
     }
@@ -139,6 +101,15 @@ public class BatchItem
     public boolean isReusable() {
         if ( isValid() ) {
             return metadata.reusable();
+        }
+        else {
+            return false;
+        }
+    }
+
+    public boolean isNewInstanceLevel() {
+        if ( isValid() ) {
+            return metadata.newInstanceLevel();
         }
         else {
             return false;
@@ -172,13 +143,43 @@ public class BatchItem
         }
     }
 
-    public boolean isNewInstanceLevel() {
-        if ( isValid() ) {
-            return metadata.newInstanceLevel();
+    /**
+     * Finds @Batch annotation.
+     *
+     * @param annotations array of annotations
+     * @param searchDepth number of levels of annotation annotations to be checked.
+     * 0 - for direct annotations.
+     * @return first occured @Batch annotation reference
+     */
+    private Batch findBatchAnnotation( Annotation[] annotations, int searchDepth ) {
+        Batch result = null;
+        for (int i = 0; i < annotations.length && result == null; i++)  {
+            Annotation annotation = annotations[i];
+            if ( annotation.annotationType().equals( Batch.class ) )  {
+                result = (Batch) annotation;
+            }
+            else if ( searchDepth > 0 ) {
+                result = findBatchAnnotation( annotation.annotationType().getAnnotations(), searchDepth-1 );
+            }
         }
-        else {
-            return false;
+        return result;
+    }
+
+    /**
+     * Finds @Title annotation.
+     *
+     * @param annotations array of annotations
+     * @return string value of annotation
+     */
+    private String findTitle( Annotation[] annotations ) {
+        String result = null;
+        for (int i = 0; i < annotations.length && result == null; i++)  {
+            Annotation annotation = annotations[i];
+            if ( annotation.annotationType().equals( Title.class ) )  {
+                result = ((Title)annotation).value();
+            }
         }
+        return result;
     }
 
 }

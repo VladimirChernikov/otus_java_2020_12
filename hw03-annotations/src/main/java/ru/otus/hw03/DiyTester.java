@@ -39,22 +39,6 @@ public class DiyTester
     }
 
     /**
-     * Populates batchItems collection.
-     *
-     * @param methods to be registered
-     */
-    private void registerMethods( Method[] methods ) 
-    {
-        for ( Method method : methods )  {
-            BatchItem batchItem = new BatchItem(method);
-            if ( batchItem.isValid() ) {
-                batchItems.add(batchItem);
-            } 
-        }
-        batchItems.sort( Comparator.comparing( BatchItem::getLevel ) );
-    }
-
-    /**
      * Starts all tests.
      * This method contains the main logic of execution thread formation
      * dependent on @Batch metadata.
@@ -123,25 +107,6 @@ public class DiyTester
     }
 
     /**
-     * Spawns execution thread.
-     *
-     * @param batchQueue
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws InvocationTargetException
-     * @throws NoSuchMethodException
-     * @throws SecurityException
-     */
-    private void spawnThread( Queue<BatchItem> batchQueue ) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-        // instance of examined class
-        final Object object = this.examinedClass.getDeclaredConstructor().newInstance();
-        // execute batch methods till the first fail
-        while ( !batchQueue.isEmpty() && batchQueue.remove().run(object) ) {
-        }
-    }
-
-    /**
      * Prints test execution report to console.
      *
      * Example output:
@@ -164,7 +129,7 @@ public class DiyTester
      * SUMMARY: 1/5 tests are PASSED
      *
      */
-    private void report() {
+    public void report() {
         System.out.println("EXAMINED CLASS: "+ this.examinedClass.getName());
         int totalCount = 0;
         int passedCount = 0;
@@ -179,20 +144,44 @@ public class DiyTester
         }
         System.out.println("SUMMARY: " + passedCount + "/" + totalCount + " tests are PASSED");
     }
-    
-    public static void main(String[] args)  {
-        if ( args.length != 1 ) {
-            System.err.println("Usage: full.path.to.TestClass");
-        } else {
-            try {
-                DiyTester diyTester = new DiyTester(args[0]);
-                diyTester.runAllTests();
-                diyTester.report();
-            } catch(Exception e){
-                e.printStackTrace();
-            }
+
+    /**
+     * Populates batchItems collection.
+     *
+     * @param methods to be registered
+     */
+    private void registerMethods( Method[] methods ) 
+    {
+        for ( Method method : methods )  {
+            BatchItem batchItem = new BatchItem(method);
+            if ( batchItem.isValid() ) {
+                batchItems.add(batchItem);
+            } 
+        }
+        batchItems.sort( Comparator.comparing( BatchItem::getLevel ) );
+    }
+
+
+    /**
+     * Spawns execution thread.
+     *
+     * @param batchQueue
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws SecurityException
+     */
+    private void spawnThread( Queue<BatchItem> batchQueue ) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+        // instance of examined class
+        final Object object = this.examinedClass.getDeclaredConstructor().newInstance();
+        // execute batch methods till the first fail
+        while ( !batchQueue.isEmpty() && batchQueue.remove().run(object) ) {
         }
     }
+
+
 }
 
 

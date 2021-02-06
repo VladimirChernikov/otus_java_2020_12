@@ -2,7 +2,7 @@ interface ProjectProperties {
     static final BASE_NAME = "DiyTester"
     static final VERSION     = "0.1"
     static final CLASSIFIER  = "fat"
-    static final MAIN_CLASS  = "ru.otus.hw03.DiyTester"
+    static final MAIN_CLASS  = "ru.otus.hw03.Runner"
 }
 
 plugins {
