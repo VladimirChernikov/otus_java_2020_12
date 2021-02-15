@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow'
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+    implementation 'org.ow2.asm:asm-commons'
+}
+
+task shadowTracerDemo(type: Jar, dependsOn: shadowJar) {
+    archiveBaseName.set('tracerDemo')
+    manifest {
+        attributes 'Main-Class': 'ru.otus.hw05.TracerDemo'
+        attributes 'Premain-Class': 'ru.otus.hw05.tracer.Agent'
+    }
+    from zipTree(shadowJar.archiveFile)
+}
+
+tasks.build.dependsOn tasks.shadowTracerDemo
+
+task run(type: Exec) {
+    dependsOn tasks.build
+    dependsOn tasks.shadowTracerDemo
+    commandLine 'java', '-javaagent:build/libs/tracerDemo.jar', '-jar', 'build/libs/tracerDemo.jar'
+}
+
