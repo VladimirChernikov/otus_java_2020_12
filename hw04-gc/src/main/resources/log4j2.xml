@@ -31,6 +31,22 @@
             </Policies>
                 <DefaultRolloverStrategy max="20"/>
         </RollingFile>
+
+        <RollingFile name="jvmtests.csv" fileName="${basePath}/jvmtests.csv" filePattern="${basePath}/jvmtests-%d{yyyy-MM-dd}-%i.csv">
+                <CsvParameterLayout>
+                    <delimiter>,</delimiter>
+                    <quote>"</quote>
+                    <quoteMode>ALL</quoteMode>
+                    <charset>UTF-8</charset>
+                </CsvParameterLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="32 MB" />
+                <OnStartupTriggeringPolicy/>
+            </Policies>
+                <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
     </Appenders>
 
     <Loggers>
@@ -42,6 +58,9 @@
         </Logger>
         <Logger name="gclogger.csv" level="DEBUG" additivity="true">
             <appender-ref ref="gclogger.csv"/>
+        </Logger>
+        <Logger name="jvmtests.csv" level="DEBUG" additivity="true">
+            <appender-ref ref="jvmtests.csv"/>
         </Logger>
     </Loggers>
 
