@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+    <Properties>
+        <Property name="basePath">./logs</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout
+                pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n" />
+        </Console>
+
+        <RollingFile name="gclogger.csv" fileName="${basePath}/gclogger.csv" filePattern="${basePath}/gclogger-%d{yyyy-MM-dd}-%i.csv">
+            <!-- <PatternLayout> -->
+            <!--     <pattern>%d{yyyy&#45;MM&#45;dd}T%d{HH:mm:ss.SSS}	%level	%msg%n</pattern> -->
+            <!-- </PatternLayout> -->
+                <CsvParameterLayout>
+                <!-- <CsvLogEventLayout> -->
+                    <delimiter>,</delimiter>
+                    <!-- <header>N,OP,KEY,VAL</header> -->
+                    <quote>"</quote>
+                    <quoteMode>ALL</quoteMode>
+                    <charset>UTF-8</charset>
+                <!-- </CsvLogEventLayout> -->
+                </CsvParameterLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="32 MB" />
+                <OnStartupTriggeringPolicy/>
+            </Policies>
+                <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+        <RollingFile name="jvmtests.csv" fileName="${basePath}/jvmtests.csv" filePattern="${basePath}/jvmtests-%d{yyyy-MM-dd}-%i.csv">
+                <CsvParameterLayout>
+                    <delimiter>,</delimiter>
+                    <quote>"</quote>
+                    <quoteMode>ALL</quoteMode>
+                    <charset>UTF-8</charset>
+                </CsvParameterLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="32 MB" />
+                <OnStartupTriggeringPolicy/>
+            </Policies>
+                <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+        <Root level="WARN" additivity="false">
+            <AppenderRef ref="console" level="WARN" />
+        </Root>
+        <Logger name="ru.otus.hw04.GcDemo" level="INFO" additivity="true">
+            <appender-ref ref="console"/>
+        </Logger>
+        <Logger name="gclogger.csv" level="DEBUG" additivity="true">
+            <appender-ref ref="gclogger.csv"/>
+        </Logger>
+        <Logger name="jvmtests.csv" level="DEBUG" additivity="true">
+            <appender-ref ref="jvmtests.csv"/>
+        </Logger>
+    </Loggers>
+
+</Configuration>
