@@ -19,7 +19,7 @@ public class ClassVisitorInfo extends ClassVisitor
 {
 
     // map to hold methods info
-    final private Map<Method, MethodVisitorInfo> methods;
+    private final Map<Method, MethodVisitorInfo> methods;
 
     public ClassVisitorInfo( final int api ) {
         super( api );

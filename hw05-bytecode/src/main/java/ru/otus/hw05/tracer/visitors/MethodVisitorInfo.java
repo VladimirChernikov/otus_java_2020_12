@@ -1,7 +1,9 @@
 package ru.otus.hw05.tracer.visitors;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Label;
@@ -17,14 +19,14 @@ final class MethodVisitorInfo extends MethodVisitor
 {
 
     // list to hold methods annotations
-    final private List<String> annotations;
+    private final Set<String> annotations;
 
     // list to hold methods local varialbes
-    final private List<String> localVariables;
+    private final List<String> localVariables;
 
     public MethodVisitorInfo( final int api ) {
         super(api);
-        annotations = new ArrayList<>();
+        annotations = new HashSet<>();
         localVariables = new ArrayList<>();
     }
 

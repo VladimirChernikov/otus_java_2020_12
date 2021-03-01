@@ -65,7 +65,7 @@ public class Agent {
             public MethodVisitor visitMethod(final int access, final String name, final String descriptor, final String signature, final String[] exceptions) {
                 String methodName = name;
                 if ( methods.stream().anyMatch( m -> m.getName() == name && m.getDescriptor() == descriptor ) ) {
-                    methodName = methodName + PROXIED_POSTFIX;
+                    methodName = getProxiedMethodName( methodName );
                 }
                 return super.visitMethod(access, methodName, descriptor, signature, exceptions);
             }
@@ -75,7 +75,7 @@ public class Agent {
 
         // build method wrappers
         for ( final Method method : methods )  {
-            buildMethodWrapper( classWriter, className, method, PROXIED_POSTFIX, classVisitorInfo.getMethodParameters( method ) );
+            buildMethodWrapper( classWriter, className, method, classVisitorInfo.getMethodParameters( method ) );
         }
 
         final byte[] finalClass = classWriter.toByteArray();
@@ -92,9 +92,9 @@ public class Agent {
      * @param proxiedPostfix ending of the proxied method name
      * @param methodParameters list of method parameters in original order
      */
-    private static void buildMethodWrapper( final ClassWriter classWriter, final String className, final Method method, final String proxiedPostfix, final List<String> methodParameters) {
+    private static void buildMethodWrapper( final ClassWriter classWriter, final String className, final Method method, final List<String> methodParameters) {
         final String originalMethodName = method.getName();
-        final String proxiedMethodName = method.getName() + proxiedPostfix;
+        final String proxiedMethodName = getProxiedMethodName( method.getName() );
         final String methodDescriptor = method.getDescriptor();
         final Type[] argumentTypes = method.getArgumentTypes();
         final int argumentCount = argumentTypes.length;
@@ -285,6 +285,16 @@ public class Agent {
             result = true;
         }
         return result;
+    }
+
+    /**
+     * Compose proxied method name from original method name
+     *
+     * @param methodName original method name
+     * @return proxied method name
+     */
+    static private String getProxiedMethodName( final String methodName ) {
+        return methodName + PROXIED_POSTFIX;
     }
 
 }
