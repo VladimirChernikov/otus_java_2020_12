@@ -1,18 +1,18 @@
 package ru.otus.hw06.api.core.cell;
 
-import ru.otus.hw06.api.Money;
+import ru.otus.hw06.api.Banknote;
 import ru.otus.hw06.api.core.AbstractCell;
 
 public class CashCell extends AbstractCell
 {
-    public CashCell( final Money initialMoney, final long capacity )
+    public CashCell( final Banknote referenceBanknote, final int maxQuantity )
     {
-        super( initialMoney, capacity );
+        super( referenceBanknote, maxQuantity );
     }
 
 	@Override
 	public Object copy() {
-		return new CashCell( (Money)this.getMoney().copy(), this.getMaxQuantity() );
+		return new CashCell( this.getReferenceBanknote(), this.getMaxQuantity() );
 	}
 
 }

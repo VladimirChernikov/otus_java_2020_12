@@ -1,59 +1,71 @@
 package ru.otus.hw06.api.core;
 
+import ru.otus.hw06.api.Banknote;
 import ru.otus.hw06.api.Cell;
-import ru.otus.hw06.api.Money;
 
-public abstract class AbstractCell extends AbstractMoney implements Cell
+public abstract class AbstractCell implements Cell
 {
-    private final Money money;
+    private final Banknote referenceBanknote;
+    private int quantity;
+    private final int maxQuantity;
 
-    public AbstractCell( final Money initialMoney, final long capacity )
+    public AbstractCell( final Banknote referenceBanknote, final int maxQuantity )
     {
-        super( initialMoney.getQuant(), 0, 0, capacity );
-        this.money = initialMoney;
+        this.quantity = 0;
+        this.referenceBanknote = referenceBanknote;
+        this.maxQuantity = maxQuantity;
     }
 
     @Override
-    public void addMoney(final Money money) throws RuntimeException {
-        final var requiredQuantity = money.getQuantity() + this.money.getQuantity();
-        if ( requiredQuantity <= this.getMaxQuantity() ) {
-            this.money.addMoney(money);
+    public void addQuantity(final int quantity) throws RuntimeException {
+        final var requiredQuantity = this.quantity + quantity;
+        if ( requiredQuantity <= this.maxQuantity ) {
+            this.quantity = requiredQuantity;
         }
         else {
-            throw new RuntimeException( "Required requiredQuantity = " + requiredQuantity + " is greater than cell maxQuantity = " + this.getMaxQuantity() );
+            throw new RuntimeException( String.format("Required requiredQuantity = %d  is greater than cell maxQuantity = %d", requiredQuantity, this.maxQuantity) );
         }
     }
 
     @Override
-    public double getAmount() {
-        return this.money.getAmount();
+    public void subtractQuantity(final int quantity) throws RuntimeException {
+        final var requiredQuantity = this.quantity - quantity;
+        if ( requiredQuantity >= 0 ) {
+            this.quantity = requiredQuantity;
+        }
+        else {
+            throw new RuntimeException( String.format("Required requiredQuantity = %d is greater than current cell quantity = %d", requiredQuantity, this.quantity) );
+        }
     }
 
     @Override
-    public long getQuantity() {
-        return this.money.getQuantity();
+    public long getAmount() {
+        return this.quantity * this.referenceBanknote.getNominale();
     }
 
     @Override
-    public Money subtractMoney(final Money money) throws RuntimeException {
-        return this.money.subtractMoney(money);
+    public int getQuantity() {
+        return this.quantity;
     }
 
     @Override
-    public Money copyMoney(final long quantity) {
-        Money result = (Money)this.money.copy();
-        result.setQuantity( quantity );
-        return result;
+    public int getMaxQuantity() {
+        return this.maxQuantity;
     }
 
     @Override
-    public Money getMoney() {
-        return this.money;
+    public Banknote getReferenceBanknote() {
+        return this.referenceBanknote;
+    }
+
+    @Override
+    public int getReferenceBanknoteNominale() {
+        return this.getReferenceBanknote().getNominale();
     }
 
     @Override
     public String toString() {
-        return "Cell info: amount = " + this.getAmount() + " and quant = " + this.getQuant();
+        return String.format("Cell info: amount = %d and nominale = %d", this.getAmount(), this.getReferenceBanknote());
     }
 
 }

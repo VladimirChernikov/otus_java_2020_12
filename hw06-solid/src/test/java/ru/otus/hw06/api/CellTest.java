@@ -5,32 +5,37 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import ru.otus.hw06.api.core.cash.RubbleBanknote;
 import ru.otus.hw06.api.core.cell.CashCellFactory;
-import ru.otus.hw06.api.core.money.Cash;
 
 class CellTest {
 
     private Cell cell;
+    private Banknote referenceBanknote;
 
     @BeforeEach
     public void setUp(){
-        cell = CashCellFactory.createInfiniteWithMoney( new Cash( 100, 5 ) );
+        this.referenceBanknote = RubbleBanknote.RUB_100;
+        this.cell = CashCellFactory.createInfiniteWithReferenceBanknote( this.referenceBanknote );
+        this.cell.addQuantity(5);
     }
 
     @Test
     public void addMoney() {
-        double balance = cell.getAmount();
-        double expected = balance + 300;
-        cell.addMoney( new Cash( 100, 3 ) );
+        long balance = cell.getAmount();
+        int qty = 3;
+        long expected = balance + qty * referenceBanknote.getNominale();
+        cell.addQuantity( qty );
         balance = cell.getAmount();
         assertThat( balance ).isEqualTo( expected );
     }
 
     @Test
     public void subtractMoney() {
-        double balance = cell.getAmount();
-        double expected = balance - 300;
-        cell.subtractMoney( new Cash( 100, 3 ) );
+        long balance = cell.getAmount();
+        int qty = 3;
+        long expected = balance - qty * referenceBanknote.getNominale();
+        cell.subtractQuantity( qty );
         balance = cell.getAmount();
         assertThat( balance ).isEqualTo( expected );
     }

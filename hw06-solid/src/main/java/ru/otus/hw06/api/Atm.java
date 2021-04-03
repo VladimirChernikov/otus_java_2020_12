@@ -1,13 +1,14 @@
 package ru.otus.hw06.api;
 
-import java.util.Collection;
+import java.util.List;
 
-public interface Atm extends Money
+public interface Atm
 {
-    public void putAmount( final double amount ) throws RuntimeException;
-    public double takeAmount( final double amount ) throws RuntimeException;
-    public Collection<Cell> getCells();
-    public long getTotalMoneyCount();
+    public void feedBanknotes( final List<Banknote> banknotes ) throws RuntimeException;
+    public void feedSameBanknote( final Banknote banknote, final int quantity ) throws RuntimeException;
+    public List<Banknote> takeAmount( final long amount ) throws RuntimeException;
+    public long getTotalBanknoteQuantity();
+    public long getBalance();
 }
 
 
