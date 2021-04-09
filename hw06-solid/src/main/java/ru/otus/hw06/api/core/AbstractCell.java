@@ -17,24 +17,34 @@ public abstract class AbstractCell implements Cell
     }
 
     @Override
-    public void addQuantity(final int quantity) throws RuntimeException {
-        final var requiredQuantity = this.quantity + quantity;
-        if ( requiredQuantity <= this.maxQuantity ) {
-            this.quantity = requiredQuantity;
+    public void addQuantity(final int quantity) {
+        if ( quantity >= 0 ) {
+            final var requiredQuantity = this.quantity + quantity;
+            if ( requiredQuantity <= this.maxQuantity ) {
+                this.quantity = requiredQuantity;
+            }
+            else {
+                throw new RuntimeException( String.format("Required requiredQuantity = %d  is greater than cell maxQuantity = %d", requiredQuantity, this.maxQuantity) );
+            }
         }
         else {
-            throw new RuntimeException( String.format("Required requiredQuantity = %d  is greater than cell maxQuantity = %d", requiredQuantity, this.maxQuantity) );
+            throw new RuntimeException( String.format("Quantity to add should not be negative. Supplied quantity is = %d", quantity) );
         }
     }
 
     @Override
-    public void subtractQuantity(final int quantity) throws RuntimeException {
-        final var requiredQuantity = this.quantity - quantity;
-        if ( requiredQuantity >= 0 ) {
-            this.quantity = requiredQuantity;
+    public void subtractQuantity(final int quantity) {
+        if ( quantity >= 0 ) {
+            final var requiredQuantity = this.quantity - quantity;
+            if ( requiredQuantity >= 0 ) {
+                this.quantity = requiredQuantity;
+            }
+            else {
+                throw new RuntimeException( String.format("Required requiredQuantity = %d is greater than current cell quantity = %d", requiredQuantity, this.quantity) );
+            }
         }
         else {
-            throw new RuntimeException( String.format("Required requiredQuantity = %d is greater than current cell quantity = %d", requiredQuantity, this.quantity) );
+            throw new RuntimeException( String.format("Quantity to subtract should not be negative. Supplied quantity is = %d", quantity) );
         }
     }
 

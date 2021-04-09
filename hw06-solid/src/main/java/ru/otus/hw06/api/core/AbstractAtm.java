@@ -40,7 +40,7 @@ public abstract class AbstractAtm implements Atm
     }
 
     @Override
-    public void feedBanknotes(List<Banknote> banknotes) throws RuntimeException {
+    public void feedBanknotes(List<Banknote> banknotes) {
         long processed = 0;
         for (int i = 0; i < banknotes.size(); i++) {
             var cells = this.cells.get( banknotes.get(i) );
@@ -60,12 +60,12 @@ public abstract class AbstractAtm implements Atm
     }
 
     @Override
-    public void feedSameBanknote(Banknote banknote, int quantity) throws RuntimeException {
+    public void feedSameBanknote(Banknote banknote, int quantity) {
         this.feedBanknotes( Collections.nCopies( quantity, banknote ) );
     }
 
     @Override
-    public List<Banknote> takeAmount(long amount) throws RuntimeException {
+    public List<Banknote> takeAmount(long amount) {
         List<Banknote> result;
         if ( amount < this.getBalance() )  {
             if ( takeAmountSequential( amount, true ).stream().mapToLong( Banknote::getNominale ).sum() == amount ) {
@@ -85,7 +85,7 @@ public abstract class AbstractAtm implements Atm
         return this.cells.values().stream().flatMap( List::stream ).collect(Collectors.toList());
     }
 
-    private List<Banknote> takeAmountSequential( final double amount, boolean testRun ) throws RuntimeException {
+    private List<Banknote> takeAmountSequential( final double amount, boolean testRun ) {
         List<Banknote> result = new ArrayList<>();
         double odd = amount;
         for ( Cell cell : this.getCells() ) {
