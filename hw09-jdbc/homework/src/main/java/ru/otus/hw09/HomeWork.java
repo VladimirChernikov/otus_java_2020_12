@@ -9,11 +9,13 @@ import org.slf4j.LoggerFactory;
 import ru.otus.core.repository.executor.DbExecutorImpl;
 import ru.otus.core.sessionmanager.TransactionManagerJdbc;
 import ru.otus.crm.datasource.DriverManagerDataSource;
-import ru.otus.crm.service.DbServiceClientImpl;
-import ru.otus.crm.service.DbServiceManagerImpl;
 import ru.otus.crm.model.Client;
 import ru.otus.crm.model.Manager;
+import ru.otus.crm.service.DbServiceClientImpl;
+import ru.otus.crm.service.DbServiceManagerImpl;
 import ru.otus.hw09.jdbc.mapper.DataTemplateJdbc;
+import ru.otus.hw09.jdbc.mapper.EntityMetaData;
+import ru.otus.hw09.jdbc.mapper.EntityMetaDataImpl;
 import ru.otus.hw09.jdbc.mapper.EntitySQLMetaData;
 import ru.otus.hw09.jdbc.mapper.EntitySQLMetaDataImpl;
 
@@ -32,8 +34,9 @@ public class HomeWork {
         var dbExecutor = new DbExecutorImpl();
 
 // Работа с клиентом
-        EntitySQLMetaData entitySQLMetaDataClient = new EntitySQLMetaDataImpl(Client.class);
-        var dataTemplateClient = new DataTemplateJdbc<Client>(dbExecutor, entitySQLMetaDataClient);
+        EntityMetaData entityMetaDataClient = new EntityMetaDataImpl(Client.class);
+        EntitySQLMetaData entitySQLMetaDataClient = new EntitySQLMetaDataImpl();
+        var dataTemplateClient = new DataTemplateJdbc<Client>(entityMetaDataClient, entitySQLMetaDataClient, dbExecutor);
 
 // Код дальше должен остаться
         var dbServiceClient = new DbServiceClientImpl(transactionManager, dataTemplateClient);
@@ -45,9 +48,9 @@ public class HomeWork {
         log.info("clientSecondSelected:{}", clientSecondSelected);
 
 // Сделайте тоже самое с классом Manager (для него надо сделать свою таблицу)
-
-        EntitySQLMetaData entitySQLMetaDataManager =  new EntitySQLMetaDataImpl(Manager.class); 
-        var dataTemplateManager = new DataTemplateJdbc<Manager>(dbExecutor, entitySQLMetaDataManager);
+        EntityMetaData entityMetaDataManager = new EntityMetaDataImpl(Manager.class);
+        EntitySQLMetaData entitySQLMetaDataManager = new EntitySQLMetaDataImpl();
+        var dataTemplateManager = new DataTemplateJdbc<Manager>(entityMetaDataManager, entitySQLMetaDataManager, dbExecutor);
 
         var dbServiceManager = new DbServiceManagerImpl(transactionManager, dataTemplateManager);
         dbServiceManager.saveManager(new Manager("ManagerFirst"));

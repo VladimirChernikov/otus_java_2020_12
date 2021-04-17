@@ -6,16 +6,16 @@ import java.util.List;
 /**
  * Создает SQL - запросы
  */
-public interface EntitySQLMetaData extends EntityMetaData {
-    String getSelectAllSql();
-    List<Field> getSelectAllSqlFields();
+public interface EntitySQLMetaData {
+    String getSelectAllSql( EntityMetaData entityMetaData );
+    List<Field> getSelectAllSqlFields( EntityMetaData entityMetaData );
 
-    String getSelectByIdSql();
-    List<Field> getSelectByIdSqlFields();
+    String getSelectByIdSql( EntityMetaData entityMetaData );
+    List<Field> getSelectByIdSqlFields( EntityMetaData entityMetaData );
 
-    String getInsertSql();
-    List<Field> getInsertSqlFields();
+    String getInsertSql( EntityMetaData entityMetaData );
+    List<Field> getInsertSqlFields( EntityMetaData entityMetaData );
 
-    String getUpdateSql();
-    List<Field> getUpdateSqlFields();
+    String getUpdateSql( EntityMetaData entityMetaData );
+    List<Field> getUpdateSqlFields( EntityMetaData entityMetaData );
 }

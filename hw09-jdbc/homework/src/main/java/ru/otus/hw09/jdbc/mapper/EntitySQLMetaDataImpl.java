@@ -9,43 +9,42 @@ import java.util.stream.Collectors;
 /**
  * Создает SQL - запросы
  */
-public class EntitySQLMetaDataImpl extends AbstractEntityMetaData implements EntitySQLMetaData {
+public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
 
-    public EntitySQLMetaDataImpl( Class<?> clazz ) {
-        super(clazz);
+    public EntitySQLMetaDataImpl() {
     }
 
 	@Override
-	public String getSelectAllSql() {
-        final List<String> fields = getFieldNames( this.getSelectAllSqlFields() );
+	public String getSelectAllSql( EntityMetaData entityMetaData ) {
+        final List<String> fields = getFieldNames( this.getSelectAllSqlFields( entityMetaData ) );
         StringBuilder sb = new StringBuilder();
         sb.append( "select " );
         sb.append( getRefStr( "", "\n", fields, "", ", ", "" ) );
         sb.append( " from " );
-        sb.append( this.getName() );
+        sb.append( entityMetaData.getName() );
 		return sb.toString();
 	}
 
 	@Override
-	public String getSelectByIdSql() {
-        final List<String> fields = getFieldNames( this.getSelectByIdSqlFields() );
+	public String getSelectByIdSql( EntityMetaData entityMetaData ) {
+        final List<String> fields = getFieldNames( this.getSelectByIdSqlFields( entityMetaData ) );
         StringBuilder sb = new StringBuilder();
         sb.append( "select " );
         sb.append( getRefStr( "", "\n", fields, "", ", ", "" ) );
         sb.append( " from " );
-        sb.append( this.getName() );
+        sb.append( entityMetaData.getName() );
         sb.append( " where " );
-        sb.append( this.getIdField().getName() );
+        sb.append( entityMetaData.getIdField().getName() );
         sb.append( " = ?" );
 		return sb.toString();
 	}
 
 	@Override
-	public String getInsertSql() {
-        final List<String> fields = getFieldNames( this.getInsertSqlFields() );
+	public String getInsertSql( EntityMetaData entityMetaData ) {
+        final List<String> fields = getFieldNames( this.getInsertSqlFields( entityMetaData ) );
         StringBuilder sb = new StringBuilder();
         sb.append( "insert into " );
-        sb.append( this.getName() );
+        sb.append( entityMetaData.getName() );
         sb.append( getRefStr( "( ", "\n", fields, "", ", ", " )" ) );
         sb.append( " values " );
         sb.append( getRefStr( "( ", "\n", "?", fields.size(), "", ", ", " )" ) );
@@ -53,37 +52,37 @@ public class EntitySQLMetaDataImpl extends AbstractEntityMetaData implements Ent
 	}
 
 	@Override
-	public String getUpdateSql() {
-        final List<String> fields = getFieldNames( this.getUpdateSqlFields() );
+	public String getUpdateSql( EntityMetaData entityMetaData ) {
+        final List<String> fields = getFieldNames( this.getUpdateSqlFields( entityMetaData ) );
         StringBuilder sb = new StringBuilder();
         sb.append( "update " );
-        sb.append( this.getName() );
+        sb.append( entityMetaData.getName() );
         sb.append( " set " );
         sb.append( getRefStr( "", "\n", fields, " = ?", ", ", "" ) );
         sb.append( " where " );
-        sb.append( this.getIdField().getName() );
+        sb.append( entityMetaData.getIdField().getName() );
         sb.append( " = ?" );
 		return sb.toString();
 	}
 
 	@Override
-	public List<Field> getSelectAllSqlFields() {
-        return this.getAllFields();
+	public List<Field> getSelectAllSqlFields( EntityMetaData entityMetaData ) {
+        return entityMetaData.getAllFields();
 	}
 
 	@Override
-	public List<Field> getSelectByIdSqlFields() {
-        return this.getAllFields();
+	public List<Field> getSelectByIdSqlFields( EntityMetaData entityMetaData ) {
+        return entityMetaData.getAllFields();
 	}
 
 	@Override
-	public List<Field> getInsertSqlFields() {
-		return this.getFieldsWithoutId();
+	public List<Field> getInsertSqlFields( EntityMetaData entityMetaData ) {
+		return entityMetaData.getFieldsWithoutId();
 	}
 
 	@Override
-	public List<Field> getUpdateSqlFields() {
-		return this.getFieldsWithoutId();
+	public List<Field> getUpdateSqlFields( EntityMetaData entityMetaData ) {
+		return entityMetaData.getFieldsWithoutId();
 	}
 
     private List<String> getFieldNames( List<Field> fields ) {
