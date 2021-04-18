@@ -33,6 +33,9 @@ allprojects {
             dependency 'org.apache.commons:commons-csv:' + Versions.commons_csv
             dependency 'org.ow2.asm:asm-commons:' + Versions.asm_commons
             dependency 'org.glassfish:javax.json:' + Versions.glassfishJson
+            dependency("org.testcontainers:junit-jupiter:${Versions.testcontainers}")
+            dependency("org.testcontainers:postgresql:${Versions.testcontainers}")
+
         }
     }
 }
