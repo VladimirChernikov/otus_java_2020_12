@@ -49,17 +49,22 @@ public class MyCache<K, V> implements HwCache<K, V> {
 
     @Override
     public void removeListener(HwListener<K, V> listener) {
-        this.listeners.removeIf( l -> l.get().equals(listener) );
+        this.purgeDefunctListeners();
+        this.listeners.removeIf( l -> l.get() == listener );
     }
 
     private void notifyAllListeners( K key, V value, String action ) {
+        this.purgeDefunctListeners();
+        for ( var listener : this.listeners )  {
+            if ( listener.get() != null ) {
+                listener.get().notify( key, value, action );
+            }
+        }
+    }
+
+    private void purgeDefunctListeners() {
         // clean up finalizing references
         while ( this.listeners.remove( this.finalizingListenersQueue.poll() ) ){};
-
-        // notify all listeners
-        for ( var listener : this.listeners )  {
-            listener.get().notify( key, value, action );
-        }
     }
 
 }

@@ -60,7 +60,7 @@ public class HomeworkTest {
         EntitySQLMetaData entitySQLMetaDataClient = new EntitySQLMetaDataImpl();
         var dataTemplateClient = new DataTemplateJdbc<Client>(entityMetaDataClient, entitySQLMetaDataClient, dbExecutor);
 
-        var myCache = new MyCache<Long, Client>();
+        var myCache = new MyCache<String, Client>();
         var dbServiceClient = new DbServiceClientImpl(transactionManager, dataTemplateClient);
         var dbServiceClientCached = new DbServiceClientCachedImpl(dbServiceClient, myCache);
 
@@ -117,7 +117,7 @@ public class HomeworkTest {
         EntitySQLMetaData entitySQLMetaDataClient = new EntitySQLMetaDataImpl();
         var dataTemplateClient = new DataTemplateJdbc<Client>(entityMetaDataClient, entitySQLMetaDataClient, dbExecutor);
 
-        var myCache = new MyCache<Long, Client>();
+        var myCache = new MyCache<String, Client>();
         var dbServiceClient = new DbServiceClientImpl(transactionManager, dataTemplateClient);
         var dbServiceClientCached = new DbServiceClientCachedImpl(dbServiceClient, myCache);
 
@@ -128,7 +128,6 @@ public class HomeworkTest {
         //when
         forceGc();
        
-        long getClientCacheTime = System.currentTimeMillis();
         long cacheCount = 0;
         for ( long idx = 1; idx <= countOfRecords; idx++ ) {
             Client client = dbServiceClientCached.getClient(idx, true).orElse(null);
@@ -136,7 +135,6 @@ public class HomeworkTest {
                 cacheCount++;
             }
         }
-        getClientCacheTime = System.currentTimeMillis() - getClientCacheTime;
 
         dbServiceClientCached.disableCache();
 
@@ -161,6 +159,7 @@ public class HomeworkTest {
         log.info("db migration started...");
         var flyway = Flyway.configure()
                 .dataSource(dataSource)
+                .baselineOnMigrate(true)
                 .locations("classpath:/db/migration")
                 .load();
         flyway.migrate();

@@ -15,10 +15,10 @@ public class DbServiceClientCachedImpl implements DBServiceClient {
     private static final Logger log = LoggerFactory.getLogger(DbServiceClientCachedImpl.class);
 
     private final DbServiceClientImpl dbServiceClient;
-    private final HwCache<Long, Client> cache;
+    private final HwCache<String, Client> cache;
     private boolean useCache;
 
-    public DbServiceClientCachedImpl(DbServiceClientImpl dbServiceClient, HwCache<Long, Client> cache ) {
+    public DbServiceClientCachedImpl(DbServiceClientImpl dbServiceClient, HwCache<String, Client> cache ) {
         this.dbServiceClient = dbServiceClient;
         this.useCache = true;
         this.cache = cache;
@@ -39,7 +39,7 @@ public class DbServiceClientCachedImpl implements DBServiceClient {
     @Override
     public Client saveClient(Client client) {
         if ( this.useCache ) {
-            this.cache.put( new Long( client.getId() ), client.clone() );
+            this.cacheClient( client );
         }
         return this.dbServiceClient.saveClient(client.clone());
     }
@@ -52,10 +52,14 @@ public class DbServiceClientCachedImpl implements DBServiceClient {
     public Optional<Client> getClient(long id, boolean cacheOnly) {
         Client client = null;
         if ( this.useCache ) {
-            client = this.cache.get(id);
+            client = this.cache.get(String.valueOf(id));
         }
         if ( client == null && !cacheOnly ) {
-            return this.dbServiceClient.getClient(id);
+            Optional<Client> clientOptional = this.dbServiceClient.getClient(id);
+            if ( clientOptional.isPresent() ) {
+                this.cacheClient( clientOptional.get() );
+            }
+            return clientOptional;
         }
         else {
             return Optional.ofNullable(client);
@@ -65,6 +69,10 @@ public class DbServiceClientCachedImpl implements DBServiceClient {
     @Override
     public List<Client> findAll() {
         return this.dbServiceClient.findAll();
+    }
+
+    private void cacheClient( Client client ) {
+        this.cache.put( String.valueOf( client.getId() ), client.clone() );
     }
 
 }

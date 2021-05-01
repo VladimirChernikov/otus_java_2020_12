@@ -33,8 +33,8 @@ public class HWCacheDemo {
         };
 
         cache.addListener(listener);
-        cache.put(new String("1"), Integer.valueOf(1));
-        cache.put(new String("2"), Integer.valueOf(1));
+        cache.put("1", Integer.valueOf(1));
+        cache.put("2", Integer.valueOf(1));
         cache.addListener(listener2);
 
         logger.info("getValue:{}", cache.get("1"));
