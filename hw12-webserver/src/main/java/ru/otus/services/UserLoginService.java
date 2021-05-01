@@ -33,7 +33,7 @@ public class UserLoginService extends AbstractLoginService {
     @Override
     protected UserPrincipal loadUserInfo(String login) {
         return transactionManager.doInTransaction(session -> {
-            List<User> users = userDataTemplate.findByField(session, this.loginField, login);
+            List<User> users = userDataTemplate.findByField(session, this.loginField.getName(), login);
             if ( users.size() > 0 )  {
                 User user = users.get(0);
                 return new UserPrincipal(user.getLogin(), new Password(user.getPassword()));

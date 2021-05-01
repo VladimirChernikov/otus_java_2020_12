@@ -11,7 +11,7 @@ public interface DataTemplate<T> {
 
     List<T> findAll(Session session);
 
-    List<T> findByField(Session session, Field field, Object value);
+    List<T> findByField(Session session, String fieldName, Object value);
 
     void insert(Session session, T object);
 

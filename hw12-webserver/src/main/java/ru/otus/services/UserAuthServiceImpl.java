@@ -27,7 +27,7 @@ public class UserAuthServiceImpl implements UserAuthService {
     public boolean authenticate(String login, String password) {
         return transactionManager.doInTransaction(session -> {
             boolean result = false;
-            List<User> users = userDataTemplate.findByField(session, this.loginField, login);
+            List<User> users = userDataTemplate.findByField(session, this.loginField.getName(), login);
             for ( var user : users ) {
                 if ( user.getPassword().equals(password) ) {
                     result = true;

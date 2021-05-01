@@ -31,11 +31,11 @@ public class DataTemplateHibernate<T> implements DataTemplate<T> {
     }
 
     @Override
-    public List<T> findByField(Session session, Field field, Object value) {
+    public List<T> findByField(Session session, String fieldName, Object value) {
         List<T> result; 
 
         // get column name of field
-        String[] fieldColumnNames = ((AbstractEntityPersister)((MetamodelImplementor)session.getSessionFactory().getMetamodel()).entityPersister(clazz)).getPropertyColumnNames(field.getName());
+        String[] fieldColumnNames = ((AbstractEntityPersister)((MetamodelImplementor)session.getSessionFactory().getMetamodel()).entityPersister(clazz)).getPropertyColumnNames(fieldName);
 
         if ( fieldColumnNames != null && fieldColumnNames.length > 0 ) {
 
