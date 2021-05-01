@@ -14,8 +14,8 @@ import ru.otus.appcontainer.api.AppComponentsContainerConfig;
 
 public class AppComponentsContainerImpl implements AppComponentsContainer {
 
-    private final static Class<AppComponentsContainerConfig> CONFIG_ANNOTATION = AppComponentsContainerConfig.class;
-    private final static Class<AppComponent> METHOD_ANNOTATION = AppComponent.class;
+    private static final Class<AppComponentsContainerConfig> CONFIG_ANNOTATION = AppComponentsContainerConfig.class;
+    private static final Class<AppComponent> METHOD_ANNOTATION = AppComponent.class;
     private final Map<String, Object> appComponentsByName = new HashMap<>();
 
     public AppComponentsContainerImpl(Class<?> initialConfigClass) {
@@ -25,7 +25,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     @Override
     public <C> C getAppComponent(Class<C> componentClass) {
         return (C)this.appComponentsByName.values().stream()
-                                          .filter( component -> componentClass.isInstance( component ) )
+                                          .filter( componentClass::isInstance )
                                           .findAny().orElse(null);
     }
 
@@ -37,13 +37,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     private void processConfig(Class<?> configClass) {
         checkConfigClass(configClass);
 
-        // find constructors
-        List<Method> components = Arrays.stream( configClass.getMethods() )
-              // methods with AppComponent annotation 
-              .filter( method -> method.isAnnotationPresent( METHOD_ANNOTATION ) )
-              // sorted by Order value
-              .sorted( (m1,m2) -> this.getComponentOrder(m1) - this.getComponentOrder(m2) )
-              .collect( Collectors.toList() );
+        List<Method> components = this.getComponentConstructors( configClass.getMethods() );
 
         // initialize objects
         try {
@@ -55,21 +49,28 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
                 this.appComponentsByName.put( componentName, componentObject );
             }
         } catch (Exception e1) {
-            e1.printStackTrace();
+            throw new RuntimeException(String.format("Cannot initialize dependent components (%s) for class config %s", components, configClass.getName()));
         }
     }
 
+    private List<Method> getComponentConstructors( Method[] methods ) {
+        return Arrays.stream( methods )
+              // methods with AppComponent annotation 
+              .filter( method -> method.isAnnotationPresent( METHOD_ANNOTATION ) )
+              // sorted by Order value
+              .sorted( (m1,m2) -> this.getComponentOrder(m1) - this.getComponentOrder(m2) )
+              .collect( Collectors.toList() );
+    }
+
     private int getComponentOrder( Method componentConstructor ) {
-        int results = componentConstructor.getAnnotation( METHOD_ANNOTATION ).order();
-        return results;
+        return componentConstructor.getAnnotation( METHOD_ANNOTATION ).order();
     }
 
     private String getComponentName( Method componentConstructor ) {
-        String results = componentConstructor.getAnnotation( METHOD_ANNOTATION ).name();
-        return results;
+        return componentConstructor.getAnnotation( METHOD_ANNOTATION ).name();
     }
 
-    private Object createComponentObject( Object configInstance, Method componentConstructor ) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+    private Object createComponentObject( Object configInstance, Method componentConstructor ) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         Object result;
         Object[] parameters = Arrays.stream( componentConstructor.getParameters() )
             .map( p -> this.getAppComponent(p.getType()) )
