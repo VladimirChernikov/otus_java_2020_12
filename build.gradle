@@ -35,7 +35,8 @@ allprojects {
             dependency 'org.glassfish:javax.json:' + Versions.glassfishJson
             dependency("org.testcontainers:junit-jupiter:${Versions.testcontainers}")
             dependency("org.testcontainers:postgresql:${Versions.testcontainers}")
-
+            dependency("org.webjars:bootstrap:${Versions.bootstrap}")
+            dependency("org.webjars.bower:jquery.ajax:${Versions.jquery_ajax}")
         }
     }
 }
