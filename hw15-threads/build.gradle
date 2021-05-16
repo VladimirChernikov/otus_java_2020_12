@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+    id 'application'    
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+    implementation("ch.qos.logback:logback-classic")
+}
+
+application {
+    mainClass = 'ru.otus.Synchronized'
+}
