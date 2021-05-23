@@ -1,0 +1,11 @@
+app:
+
+  datasource:
+    demo-db:
+      jdbcUrl: jdbc:postgresql://192.168.2.235:5430/demoDB
+      # jdbcUrl: jdbc:postgresql://localhost:5430/demoDB
+      username: usr
+      password: pwd
+
+  client-list-page:
+    msg: Привет мир!!!

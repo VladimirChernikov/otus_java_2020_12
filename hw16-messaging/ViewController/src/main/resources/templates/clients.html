@@ -1,0 +1,86 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Клиенты</title>
+
+    <link href="/main.css" rel="stylesheet">
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="app.js"></script>
+
+    <script>
+        function refreshList() {
+            $(".list").load("/client/refreshPartial")
+        }
+
+    </script>
+</head>
+
+<body>
+    <input style="" type="text" id="sessionId" hidden>
+<h4>Добавить клиента</h4>
+<input type="text" name="name" id = "clientNameTextBox" value="Client 4" placeholder="имя клиента">
+<input type="text" name="phone" id = "clientPhoneTextBox" value="7-123-456-78-90;8-765-543-32-10" placeholder="номера телефонов">
+<input type="text" name="address" id = "clientAddressTextBox" value="Address 4" placeholder="адрес клиента">
+<button id="putClient">Сохранить</button>
+<pre id = "statusContainer"></pre>
+
+<div"input">
+    <input type="text" id="getClientId" placeholder="ID клиента"/>
+    <button type="submit" id="getClientById">Найти клиента по ID</button>
+    <table style="width: 400px" class="table">
+        <thead>
+            <tr>
+                <td style="width: 50px">Id</td>
+                <td style="width: 150px">Имя</td>
+                <td style="width: 350px">Телефоны</td>
+                <td style="width: 250px">Адрес</td>
+            </tr>
+        </thead>
+        <tbody id="clientContainer">
+            <div th:each="client : ${clients}">                      
+            <tr>
+                <td th:text="${client.id}"></td>
+                <td th:text="${client.name}"></td>
+                <td>
+                    <div th:each="phone, iterStat : ${client.phones}" th:text="!${iterStat.last} ? ${phone?.number} + ';': ${phone?.number}"></div>
+                </td>
+                <td th:text=${client.address?.street}></td>
+                <td></td>
+            </tr>
+            </div>
+        </tbody>
+    </table>
+</div>
+
+<h4>Список 
+    новых клиентов</h4>
+<div th:fragment="list" class="list">
+    <table style="width: 400px" class="table">
+        <thead>
+            <tr>
+                <td style="width: 50px">Id</td>
+                <td style="width: 150px">Имя</td>
+                <td style="width: 350px">Телефоны</td>
+                <td style="width: 250px">Адрес</td>
+            </tr>
+        </thead>
+        <tbody id="clientsTable">
+            <div th:each="client : ${clients}">                      
+            <tr>
+                <td th:text="${client.id}"></td>
+                <td th:text="${client.name}"></td>
+                <td>
+                    <div th:each="phone, iterStat : ${client.phones}" th:text="!${iterStat.last} ? ${phone?.number} + ';': ${phone?.number}"></div>
+                </td>
+                <td th:text=${client.address?.street}></td>
+                <td></td>
+            </tr>
+            </div>
+        </tbody>
+    </table>
+</div>
+</body>
+
+</html>

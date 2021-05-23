@@ -1,0 +1,54 @@
+plugins {
+	id 'org.springframework.boot' version '2.4.5'
+	id 'java'
+	id 'application'
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+    implementation project(':hw16-messaging:Model')
+    implementation project(':hw16-messaging:MessageSystem')
+    implementation project(':hw16-messaging:Services')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    implementation 'org.springframework.data:spring-data-jdbc'
+
+    implementation("org.webjars:webjars-locator-core")
+    implementation("org.webjars:sockjs-client")
+    implementation("org.webjars:stomp-websocket")
+    implementation("org.webjars:bootstrap")
+
+    testImplementation ('org.junit.jupiter:junit-jupiter-api')
+    testImplementation ('org.junit.jupiter:junit-jupiter-engine')
+    testImplementation ('org.assertj:assertj-core')
+    testImplementation ('org.mockito:mockito-core')
+    testImplementation ('org.mockito:mockito-junit-jupiter')
+
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+    testLogging.showStandardStreams = true
+    testLogging.exceptionFormat = 'full'
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.with {
+        encoding = 'UTF-8'
+    }
+}
+
+application {
+    mainClass = 'ru.otus.App'
+}

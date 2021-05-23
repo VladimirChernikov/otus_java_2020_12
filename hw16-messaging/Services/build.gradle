@@ -1,0 +1,34 @@
+plugins {
+	id 'java'
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+    implementation project(':hw16-messaging:MessageSystem')
+    implementation project(':hw16-messaging:Model')
+
+    implementation 'org.springframework.data:spring-data-jdbc'
+    //
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+    testLogging.showStandardStreams = true
+    testLogging.exceptionFormat = 'full'
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.with {
+        encoding = 'UTF-8'
+    }
+}
+

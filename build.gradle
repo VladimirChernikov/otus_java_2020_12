@@ -35,8 +35,10 @@ allprojects {
             dependency 'org.glassfish:javax.json:' + Versions.glassfishJson
             dependency("org.testcontainers:junit-jupiter:${Versions.testcontainers}")
             dependency("org.testcontainers:postgresql:${Versions.testcontainers}")
+            dependency("org.webjars:sockjs-client:${Versions.sockjs}")
+            dependency("org.webjars:stomp-websocket:${Versions.stomp}")
             dependency("org.webjars:bootstrap:${Versions.bootstrap}")
-            dependency("org.webjars.bower:jquery.ajax:${Versions.jquery_ajax}")
+            dependency("org.flywaydb:flyway-core:${Versions.flyway}")
         }
     }
 }
