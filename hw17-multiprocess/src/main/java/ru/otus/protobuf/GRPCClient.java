@@ -1,15 +1,17 @@
 package ru.otus.protobuf;
 
+import java.util.Optional;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.LongStream;
+
+import com.google.protobuf.Int64Value;
+
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 import ru.otus.protobuf.generated.RemoteGeneratorServiceGrpc;
 import ru.otus.protobuf.generated.SequenceParameters;
-import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.ArrayBlockingQueue;
-import com.google.protobuf.Int64Value;
-import java.util.stream.LongStream;
 
 public class GRPCClient {
 
@@ -31,13 +33,15 @@ public class GRPCClient {
                                                       .setDelayMs(2000)
                                                       .build();
 
-        final AtomicLong serverValue = new AtomicLong(0L);
+
+        final var serverValueQueue = new ConcurrentLinkedDeque<Long>();
 
         newStub.generateSequence( params , new StreamObserver<Int64Value>() {
             @Override
             public void onNext(Int64Value l) {
                 System.out.println(String.format("  new value %d", l.getValue() ));
-                serverValue.set(l.getValue());
+                serverValueQueue.poll();
+                serverValueQueue.add(l.getValue());
             }
 
             @Override
@@ -51,10 +55,11 @@ public class GRPCClient {
             }
         });
 
-        final AtomicLong currentAddition = new AtomicLong(0L);
+
+        final var currentAddition = new AtomicLong(0L);
 
         LongStream.range(0, 50).forEach( l -> {
-            currentAddition.set( currentAddition.get() + serverValue.get() );
+            currentAddition.set( currentAddition.get() + Optional.ofNullable( serverValueQueue.poll() ).orElse(0L) );
             System.out.println( String.format( "current value %d ", l + currentAddition.get() ));
             try {
                 Thread.sleep(1000);
@@ -62,6 +67,7 @@ public class GRPCClient {
                 e.printStackTrace();
             }
         });
+
 
         channel.shutdown();
     }
